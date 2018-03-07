@@ -25,17 +25,17 @@ public class ProjetAlgo {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        
+        schedulingSolution1();
     }
     
     public static void schedulingSolution1() {
         //Test 1
-        Machine m1 = new Machine(1*G, ServerEnum.CPU);
+        Machine m1 = new Machine(ServerEnum.CPU, 40);
         List<Machine> machines = new ArrayList<Machine>();
         machines.add(m1);
         
-        Task t1 = new Task(ServerEnum.CPU, 25, 1);
-        Task t2 = new Task(ServerEnum.CPU, 25, 2);
+        Task t1 = new Task(ServerEnum.CPU, 10, 1);
+        Task t2 = new Task(ServerEnum.CPU, 10, 2);
         t2.addRequiredTask(t1);
         List<Task> tasks = new ArrayList<Task>();
         tasks.add(t1);
@@ -48,15 +48,15 @@ public class ProjetAlgo {
         System.out.println(workOnJobs(jobs, machines));
         
         //Test 2
-        Machine m2 = new Machine(1*G, "CPU");
+        Machine m2 = new Machine(ServerEnum.CPU, 1);
         machines.add(m2);
-        Machine m3 = new Machine(1*G, "GPU");
+        Machine m3 = new Machine(ServerEnum.GPU, 1);
         machines.add(m3);
         
-        t1 = new Task("CPU", 1*G);
-        t2 = new Task("CPU", 1*G);
+        t1 = new Task(ServerEnum.CPU, 1, 1);
+        t2 = new Task(ServerEnum.CPU, 1, 2);
         t2.addRequiredTask(t1);
-        Task t3 = new Task("CPU", 1*G);
+        Task t3 = new Task(ServerEnum.CPU, 1, 3);
         tasks.clear();
         tasks.add(t1);
         tasks.add(t2);
@@ -65,10 +65,10 @@ public class ProjetAlgo {
         System.out.println(workOnJobs(jobs, machines));
         
         //Test 3
-        t1 = new Task("CPU", 1*G);
-        t2 = new Task("CPU", 1*G);
+        t1 = new Task(ServerEnum.CPU, 1, 1);
+        t2 = new Task(ServerEnum.CPU, 1, 2);
         t2.addRequiredTask(t1);
-        t3 = new Task("CPU", 2500*M);
+        t3 = new Task(ServerEnum.CPU, 3, 3);
         tasks.clear();
         tasks.add(t1);
         tasks.add(t2);

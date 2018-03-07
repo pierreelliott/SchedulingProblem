@@ -24,7 +24,7 @@ public class Machine {
     private long totalOperations, availableOperations;
     private ServerEnum type;
     
-    public Machine(long totalOperations, ServerEnum type){
+    public Machine(ServerEnum type, long totalOperations){
         this.totalOperations = checkEnum(totalOperations, type);
         availableOperations = this.totalOperations;
         this.type = type;
