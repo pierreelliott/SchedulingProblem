@@ -36,10 +36,10 @@ public class Machine {
                 cap = verifyCapacity(cap, minCPU, maxCPU);
                 break;
             case GPU:
-                cap = verifyCapacity(cap, minCPU, maxCPU);
+                cap = verifyCapacity(cap, minGPU, maxGPU);
                 break;
             case IO:
-                cap = verifyCapacity(cap, minCPU, maxCPU);
+                cap = verifyCapacity(cap, minIO, maxIO);
                 break;
         }
         return cap;
@@ -87,11 +87,27 @@ public class Machine {
     
     /* ================================= */
     
-    public static List<Server> generateListServer(int nbMin, int nbMax) {
-        List<Server> list = new ArrayList<>();
+    public static List<Machine> generateListServer(ServerEnum type, int nbServer) {
+        List<Machine> list = new ArrayList<>();
+        long randCap;
         
-        // TODO Traitements (avec #nb CPU par rapportau nb total, ...)
+        for(int i = 0; i < nbServer; i++) {
+            randCap = randomCapacity(type);
+            list.add(new Machine(type, randCap));
+        }
         
         return list;
+    }
+    
+    public static long randomCapacity(ServerEnum type) {
+        switch(type) {
+            case CPU:
+                return (long)(Math.random()*1000*(maxCPU - minCPU) + minCPU);
+            case GPU:
+                return (long)(Math.random()*1000*(maxGPU - minGPU) + minGPU);
+            case IO:
+                return (long)(Math.random()*1000*(maxIO - minIO) + minIO);
+        }
+        return 3;
     }
 }
