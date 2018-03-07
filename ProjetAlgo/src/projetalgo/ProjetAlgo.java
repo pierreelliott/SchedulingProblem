@@ -42,6 +42,35 @@ public class ProjetAlgo {
         jobs.add(j1);
         
         System.out.println(workOnJobs(jobs, machines));
+        
+        //Test 2
+        Machine m2 = new Machine(1*G, "CPU");
+        machines.add(m2);
+        Machine m3 = new Machine(1*G, "GPU");
+        machines.add(m3);
+        
+        t1 = new Task("CPU", 1*G);
+        t2 = new Task("CPU", 1*G);
+        t2.addRequiredTask(t1);
+        Task t3 = new Task("CPU", 1*G);
+        tasks.clear();
+        tasks.add(t1);
+        tasks.add(t2);
+        tasks.add(t3);
+        
+        System.out.println(workOnJobs(jobs, machines));
+        
+        //Test 3
+        t1 = new Task("CPU", 1*G);
+        t2 = new Task("CPU", 1*G);
+        t2.addRequiredTask(t1);
+        t3 = new Task("CPU", 2500*M);
+        tasks.clear();
+        tasks.add(t1);
+        tasks.add(t2);
+        tasks.add(t3);
+        
+        System.out.println(workOnJobs(jobs, machines));
     }
     
     public static double workOnJobs(List<Job> jobs, List<Machine> machines){
