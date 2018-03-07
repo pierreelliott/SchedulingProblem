@@ -102,11 +102,11 @@ public class Machine {
     public static long randomCapacity(ServerEnum type) {
         switch(type) {
             case CPU:
-                return (long)(Math.random()*1000*(maxCPU - minCPU) + minCPU);
+                return (long)(Math.random()*(maxCPU - minCPU) + minCPU);
             case GPU:
-                return (long)(Math.random()*1000*(maxGPU - minGPU) + minGPU);
+                return (long)(Math.random()*(maxGPU - minGPU) + minGPU);
             case IO:
-                return (long)(Math.random()*1000*(maxIO - minIO) + minIO);
+                return (long)(Math.random()*(maxIO - minIO) + minIO);
         }
         return 3;
     }

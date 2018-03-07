@@ -5,6 +5,7 @@
  */
 package projetalgo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,7 +43,7 @@ public class Job {
         desc += "]";
         
         for(Task t: tasks) {
-            desc += "\t" + t.getName() + " = " + t.toString();
+            desc += "\t" + t.toString();
         }
         return desc;
     }
@@ -51,7 +52,18 @@ public class Job {
     
     private static int jobTotalNumber = 0;
     
-    public static void generateRandomJob(int minTasks, int maxTasks) {
+    public static Job generateRandomJob(int nbTasks) {
+        Job job = null;
+        List<Task> tasks = new ArrayList<>();
         
+        for(int i = 1; i <= nbTasks; i++) {
+            tasks.add(Task.generateRandomTask(i));
+            if(i != 1) {
+                // TODO Ajouter les dépendances
+            }
+        }
+        job = new Job(tasks);
+        
+        return job;
     }
 }

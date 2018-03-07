@@ -74,13 +74,25 @@ public class Task {
         return name;
     }
     
+    public String getName(boolean number) {
+        if(number) {
+            return name.substring(1);
+        } else {
+            return getName();
+        }
+    }
+    
     public void setName(String n) {
         this.name = n;
+    }
+    
+    public void setName(int n) {
+        this.name = "T" + n;
     }
 
     @Override
     public String toString() {
-        String desc = machineType + ", " + getCapacity() + ", [";
+        String desc = name + " = " + machineType + ", " + getCapacity() + ", [";
         for(Task t: requiredTasks) {
             desc += t.getName();
             if(requiredTasks.indexOf(t) != requiredTasks.size()-1) {
@@ -92,17 +104,52 @@ public class Task {
     }
     
     private String getCapacity() {
-        if(this.remainingOperations >= 1000) {
-            return this.remainingOperations + "T";
-        } else {
-            return this.remainingOperations + "G";
-        }
+        return getCapacity(this.remainingOperations);
     }
     
     /* ========================== */
     
-    public static Task generateRandomTask() {
-        // TODO Choix serveur aléatoire, choix capacité semi aléatoire (dépend du serveur)
-        return new Task(ServerEnum.CPU, 2000, 0);
+    // Ressources nécessaires pour une tâche en fonction du type de serveur
+    // (jusqu'à 10 fois la puissance max du serveur)
+    private static final int minCPU = 1; // = 1G
+    private static final int maxCPU = 500; // = 500G
+    private static final int minGPU = 1000; // = 1T
+    private static final int maxGPU = 250000; // = 250T
+    private static final int minIO = 1; // = 1G
+    private static final int maxIO = 15; // = 15G
+    
+    private static String getCapacity(long cap) {
+        if(cap >= 1000) {
+            return cap + "T";
+        } else {
+            return cap + "G";
+        }
+        // FIXME Problème avec les GPU qui ont une capacité de 17689 (ou autre) G et ça met un T à la fin...
+    }
+    
+    public static Task generateRandomTask(int name) {
+        // Choisit un type de serveur aléatoirement
+        int rand = (int)(Math.random()*1000*(ServerEnum.values().length))/1000;
+        return generateRandomTask(ServerEnum.values()[rand], name);
+    }
+    
+    public static Task generateRandomTask(ServerEnum enu, int name) {
+        // Choisit le besoin en ressources semi-aléatoirement
+        // (suivant le type de serveur)
+        long cap = randomCapacity(enu);
+        System.out.println("Capacité = " +cap+", donc cap = "+getCapacity(cap));
+        return new Task(enu, cap, name);
+    }
+    
+    public static long randomCapacity(ServerEnum type) {
+        switch(type) {
+            case CPU:
+                return (long)(Math.random()*(maxCPU - minCPU) + minCPU);
+            case GPU:
+                return (long)(Math.random()*(maxGPU - minGPU) + minGPU);
+            case IO:
+            default:
+                return (long)(Math.random()*(maxIO - minIO) + minIO);
+        }
     }
 }

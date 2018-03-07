@@ -28,7 +28,8 @@ public class ProjetAlgo {
     public static void main(String[] args) {
         // TODO code application logic here
         
-        schedulingSolution1();
+        //schedulingSolution1();
+        FileGenerator.generate();
     }
     
     public static void schedulingSolution1() {
