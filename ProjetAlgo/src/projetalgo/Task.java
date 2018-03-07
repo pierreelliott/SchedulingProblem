@@ -36,7 +36,7 @@ public class Task {
     public void workOnTask(List<Machine> machines){
         for(Task requiredTask : requiredTasks){
             if(!requiredTask.isDone()){
-                requiredTask.workOnTask(machines);
+                return;
             }
         }
         
@@ -46,16 +46,61 @@ public class Task {
             }
 
             long machineAvailableOperations = machine.getAvailableOperations();
-            long machineTotalOperations = machine.getTotalOperations();
             
             if(machineAvailableOperations <= 0){
                 continue;
             }
             else{
                 long operationsToMake = Math.min(machineAvailableOperations, remainingOperations);
-                machine.makeOperations(operationsToMake);
+                remainingOperations -= machine.makeOperations(operationsToMake);
+            }
 
-                remainingOperations -= operationsToMake;
+            if(this.isDone()){
+                break;
+            }
+        }
+    }
+    
+    //Cette fonction permet d'exécuter une tâche sur toutes les machines disponibles
+    //même quand une seule suffirait pour le faire en 1 seconde max
+    public void workOnTaskOptimized(List<Machine> machines){
+        for(Task requiredTask : requiredTasks){
+            if(!requiredTask.isDone()){
+                return;
+            }
+        }
+        
+        //On parcourt les machines une première fois pour calculer leur capacité quand on les regroupe
+        long machineTotalAvailableOperations = 0L;
+        for(Machine machine : machines){
+            if(machine.getType()!=machineType){
+                continue;
+            }
+
+            machineTotalAvailableOperations += machine.getAvailableOperations();
+        }
+        if(machineTotalAvailableOperations <= 0d){
+            return;
+        }
+        
+        //On calcule combien de temps doit travailler chaque machine sur la tâche
+        //(afin d'optimiser au maximum ce temps doit être identique sur chaque machine)
+        double timeToWork = (double)remainingOperations/machineTotalAvailableOperations;
+        
+        //Le reste de la fonction demeure le même, à part le nombre d'opérations à faire que l'on calcule en foncion du temps de travail
+        for(Machine machine : machines){
+            if(machine.getType()!=machineType){
+                continue;
+            }
+
+            long machineAvailableOperations = machine.getAvailableOperations();
+            
+            if(machineAvailableOperations <= 0){
+                continue;
+            }
+            else{
+                long operationsToMake = Math.min(machineAvailableOperations, (long)(machineAvailableOperations*timeToWork));
+                remainingOperations -= machine.makeOperations(operationsToMake);
             }
 
             if(this.isDone()){

@@ -59,11 +59,12 @@ public class Machine {
         return type;
     }
     
-    public void makeOperations(long operationsNumber){
+    public long makeOperations(long operationsNumber){
         if(operationsNumber > availableOperations){
-            return;
+            return 0;
         }
         availableOperations -= operationsNumber;
+        return operationsNumber;
     }
     
     public long getTotalOperations(){

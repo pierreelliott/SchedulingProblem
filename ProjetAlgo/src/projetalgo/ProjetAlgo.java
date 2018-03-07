@@ -29,15 +29,22 @@ public class ProjetAlgo {
         // TODO code application logic here
         
         schedulingSolution1();
+        schedulingSolution2();
     }
     
     public static void schedulingSolution1() {
-        test1();
-        test2();
-        test3();
+        test1(false);
+        test2(false);
+        test3(false);
     }
     
-    public static double workOnJobs(List<Job> jobs, List<Machine> machines){
+    public static void schedulingSolution2() {
+        test1(true);
+        test2(true);
+        test3(true);
+    }
+    
+    public static double workOnJobs(List<Job> jobs, List<Machine> machines, boolean optimize){
         double elapsedSeconds = 0d, totalElapsedSeconds = 0d;
         
         boolean isWorkDone = false;
@@ -46,7 +53,12 @@ public class ProjetAlgo {
             
             for(Job job : jobs){
                 for(Task task : job.getTasks()){
-                    task.workOnTask(machines);
+                    if(optimize){
+                        task.workOnTaskOptimized(machines);
+                    }
+                    else{
+                        task.workOnTask(machines);
+                    }
                     if(!task.isDone()){
                         isWorkDone = false;
                     }
