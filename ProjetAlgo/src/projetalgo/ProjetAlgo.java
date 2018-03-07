@@ -7,6 +7,9 @@ package projetalgo;
 
 import java.util.ArrayList;
 import java.util.List;
+import static projetalgo.Algo1.test1;
+import static projetalgo.Algo1.test2;
+import static projetalgo.Algo1.test3;
 
 /**
  *
@@ -29,52 +32,9 @@ public class ProjetAlgo {
     }
     
     public static void schedulingSolution1() {
-        //Test 1
-        Machine m1 = new Machine(ServerEnum.CPU, 40);
-        List<Machine> machines = new ArrayList<Machine>();
-        machines.add(m1);
-        
-        Task t1 = new Task(ServerEnum.CPU, 10, 1);
-        Task t2 = new Task(ServerEnum.CPU, 10, 2);
-        t2.addRequiredTask(t1);
-        List<Task> tasks = new ArrayList<Task>();
-        tasks.add(t1);
-        tasks.add(t2);
-        
-        Job j1 = new Job(tasks);
-        List<Job> jobs = new ArrayList<Job>();
-        jobs.add(j1);
-        
-        System.out.println(workOnJobs(jobs, machines));
-        
-        //Test 2
-        Machine m2 = new Machine(ServerEnum.CPU, 1);
-        machines.add(m2);
-        Machine m3 = new Machine(ServerEnum.GPU, 1);
-        machines.add(m3);
-        
-        t1 = new Task(ServerEnum.CPU, 1, 1);
-        t2 = new Task(ServerEnum.CPU, 1, 2);
-        t2.addRequiredTask(t1);
-        Task t3 = new Task(ServerEnum.CPU, 1, 3);
-        tasks.clear();
-        tasks.add(t1);
-        tasks.add(t2);
-        tasks.add(t3);
-        
-        System.out.println(workOnJobs(jobs, machines));
-        
-        //Test 3
-        t1 = new Task(ServerEnum.CPU, 1, 1);
-        t2 = new Task(ServerEnum.CPU, 1, 2);
-        t2.addRequiredTask(t1);
-        t3 = new Task(ServerEnum.CPU, 3, 3);
-        tasks.clear();
-        tasks.add(t1);
-        tasks.add(t2);
-        tasks.add(t3);
-        
-        System.out.println(workOnJobs(jobs, machines));
+        test1();
+        test2();
+        test3();
     }
     
     public static double workOnJobs(List<Job> jobs, List<Machine> machines){
