@@ -14,7 +14,7 @@ import static projetalgo.ProjetAlgo.workOnJobs;
  * @author p1506193
  */
 public class Algo1 {
-    public static void test1() {
+    public static void test1(boolean optimize) {
         Machine m1 = new Machine(ServerEnum.CPU, 20);
         List<Machine> machines = new ArrayList<Machine>();
         machines.add(m1);
@@ -30,10 +30,10 @@ public class Algo1 {
         List<Job> jobs = new ArrayList<Job>();
         jobs.add(j1);
         
-        System.out.println(workOnJobs(jobs, machines));
+        System.out.println(workOnJobs(jobs, machines, optimize));
     }
     
-    public static void test2() {
+    public static void test2(boolean optimize) {
         List<Machine> machines = new ArrayList<Machine>();
         Machine m1 = new Machine(ServerEnum.CPU, 20);
         machines.add(m1);
@@ -55,10 +55,10 @@ public class Algo1 {
         List<Job> jobs = new ArrayList<Job>();
         jobs.add(j1);
         
-        System.out.println(workOnJobs(jobs, machines));
+        System.out.println(workOnJobs(jobs, machines, optimize));
     }
     
-    public static void test3() {
+    public static void test3(boolean optimize) {
         List<Machine> machines = new ArrayList<Machine>();
         Machine m1 = new Machine(ServerEnum.CPU, 20);
         machines.add(m1);
@@ -80,6 +80,6 @@ public class Algo1 {
         List<Job> jobs = new ArrayList<Job>();
         jobs.add(j1);
         
-        System.out.println(workOnJobs(jobs, machines));
+        System.out.println(workOnJobs(jobs, machines, optimize));
     }
 }
