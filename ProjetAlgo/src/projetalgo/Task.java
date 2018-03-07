@@ -14,17 +14,19 @@ import java.util.List;
  */
 public class Task {
     private List<Task> requiredTasks;
-    private String machineType;
+    private ServerEnum machineType;
     private long /*totalOperations,*/ remainingOperations;
+    private String name;
     
-    public Task(List<Task> requiredTasks, String machineType, long remainingOperations){
+    public Task(List<Task> requiredTasks, ServerEnum machineType, long remainingOperations, int nom){
         this.requiredTasks = requiredTasks;
         this.machineType = machineType;
         this.remainingOperations = remainingOperations;
+        this.name = "T" + nom;
     }
     
-    public Task(String machineType, long remainingOperations){
-        this(new ArrayList<Task>(), machineType, remainingOperations);
+    public Task(ServerEnum machineType, long remainingOperations, int nom){
+        this(new ArrayList<Task>(), machineType, remainingOperations, nom);
     }
     
     public void addRequiredTask(Task task){
@@ -64,5 +66,43 @@ public class Task {
     
     public boolean isDone(){
         return remainingOperations <= 0;
+    }
+    
+    /* ========================== */
+    
+    public String getName() {
+        return name;
+    }
+    
+    public void setName(String n) {
+        this.name = n;
+    }
+
+    @Override
+    public String toString() {
+        String desc = machineType + ", " + getCapacity() + ", [";
+        for(Task t: requiredTasks) {
+            desc += t.getName();
+            if(requiredTasks.indexOf(t) != requiredTasks.size()-1) {
+                desc += ",";
+            }
+        }
+        desc += "]\n";
+        return desc;
+    }
+    
+    private String getCapacity() {
+        if(this.remainingOperations >= 1000) {
+            return this.remainingOperations + "T";
+        } else {
+            return this.remainingOperations + "G";
+        }
+    }
+    
+    /* ========================== */
+    
+    public static Task generateRandomTask() {
+        // TODO Choix serveur aléatoire, choix capacité semi aléatoire (dépend du serveur)
+        return new Task(ServerEnum.CPU, 2000, 0);
     }
 }

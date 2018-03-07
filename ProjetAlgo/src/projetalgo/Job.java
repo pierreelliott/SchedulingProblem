@@ -13,9 +13,11 @@ import java.util.List;
  */
 public class Job {
     private List<Task> tasks;
+    private int jobNumber;
     
     public Job(List<Task> tasks){
         this.tasks = tasks;
+        this.jobNumber = ++jobTotalNumber;
     }
     
     public void addTask(Task task){
@@ -24,5 +26,32 @@ public class Job {
     
     public List<Task> getTasks(){
         return tasks;
+    }
+    
+    /* ============================ */
+
+    @Override
+    public String toString() {
+        String desc = "Job " + jobNumber + " = [";
+        for(Task t: tasks) {
+            desc += t.getName();
+            if(tasks.indexOf(t) != tasks.size()-1) {
+                desc += ", ";
+            }
+        }
+        desc += "]";
+        
+        for(Task t: tasks) {
+            desc += "\t" + t.getName() + " = " + t.toString();
+        }
+        return desc;
+    }
+    
+    /* ============================ */
+    
+    private static int jobTotalNumber = 0;
+    
+    public static void generateRandomJob(int minTasks, int maxTasks) {
+        
     }
 }

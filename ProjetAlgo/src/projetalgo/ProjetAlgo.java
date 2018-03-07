@@ -25,13 +25,17 @@ public class ProjetAlgo {
     public static void main(String[] args) {
         // TODO code application logic here
         
+        
+    }
+    
+    public static void schedulingSolution1() {
         //Test 1
-        Machine m1 = new Machine(1*G, "CPU");
+        Machine m1 = new Machine(1*G, ServerEnum.CPU);
         List<Machine> machines = new ArrayList<Machine>();
         machines.add(m1);
         
-        Task t1 = new Task("CPU", 250*M);
-        Task t2 = new Task("CPU", 250*M);
+        Task t1 = new Task(ServerEnum.CPU, 25, 1);
+        Task t2 = new Task(ServerEnum.CPU, 25, 2);
         t2.addRequiredTask(t1);
         List<Task> tasks = new ArrayList<Task>();
         tasks.add(t1);
