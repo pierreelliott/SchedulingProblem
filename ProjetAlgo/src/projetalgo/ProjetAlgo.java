@@ -27,9 +27,9 @@ public class ProjetAlgo {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        //FileGenerator.generate();
-        schedulingSolution1();
-        schedulingSolution2();
+        FileGenerator.generate();
+        //schedulingSolution1();
+        //schedulingSolution2();
     }
     
     public static void schedulingSolution1() {

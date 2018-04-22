@@ -40,7 +40,7 @@ public class Job {
                 desc += ", ";
             }
         }
-        desc += "]";
+        desc += "]\n";
         
         for(Task t: tasks) {
             desc += "\t" + t.toString();
@@ -51,17 +51,34 @@ public class Job {
     /* ============================ */
     
     private static int jobTotalNumber = 0;
+    public static void setJobStartNumber(int n) { jobTotalNumber = n; }
+    public static int getJobStartNumber() { return jobTotalNumber; }
     
     public static Job generateRandomJob(int nbTasks) {
         Job job = null;
         List<Task> tasks = new ArrayList<>();
         
         for(int i = 1; i <= nbTasks; i++) {
-            tasks.add(Task.generateRandomTask(i));
+            Task t = Task.generateRandomTask(i);
             if(i != 1) {
-                // TODO Ajouter les dépendances
+                Task.randomAncestors(t, tasks);
             }
+            tasks.add(t);
         }
+        job = new Job(tasks);
+        
+        return job;
+    }
+    
+    public static Job readJob(String jobString) {
+        Job job = null;
+        List<Task> tasks = new ArrayList<>();
+        
+        String[] tasksString = jobString.replaceAll("\t", "").split("\n");
+        for(int i = 1; i < tasksString.length; i++) {
+            tasks.add(Task.readTask(jobString, tasks));
+        }
+        
         job = new Job(tasks);
         
         return job;

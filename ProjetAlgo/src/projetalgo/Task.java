@@ -19,14 +19,22 @@ public class Task {
     private String name;
     
     public Task(List<Task> requiredTasks, ServerEnum machineType, long remainingOperations, int nom){
+        this(requiredTasks, machineType, remainingOperations, "T"+nom);
+    }
+    
+    public Task(List<Task> requiredTasks, ServerEnum machineType, long remainingOperations, String nom){
         this.requiredTasks = requiredTasks;
         this.machineType = machineType;
         this.remainingOperations = remainingOperations;
-        this.name = "T" + nom;
+        this.name = nom;
     }
     
     public Task(ServerEnum machineType, long remainingOperations, int nom){
-        this(new ArrayList<Task>(), machineType, remainingOperations, nom);
+        this(new ArrayList<>(), machineType, remainingOperations, nom);
+    }
+    
+    public Task(ServerEnum machineType, long remainingOperations, String nom){
+        this(new ArrayList<>(), machineType, remainingOperations, nom);
     }
     
     public void addRequiredTask(Task task){
@@ -137,7 +145,7 @@ public class Task {
 
     @Override
     public String toString() {
-        String desc = name + " = " + machineType + ", " + getCapacity() + ", [";
+        String desc = name + " = " + machineType.getString() + ", " + getCapacity() + ", [";
         for(Task t: requiredTasks) {
             desc += t.getName();
             if(requiredTasks.indexOf(t) != requiredTasks.size()-1) {
@@ -164,12 +172,15 @@ public class Task {
     private static final int maxIO = 15; // = 15G
     
     private static String getCapacity(long cap) {
-        if(cap >= 1000) {
-            return cap + "T";
-        } else {
-            return cap + "G";
+        return cap + "G";
+    }
+    
+    private static long getCapacity(String cap) {
+        if(cap.endsWith("T")) { // Si l'unité est ele Teraoctet
+            return Long.parseLong(cap.substring(0, cap.length()))*1000;
         }
-        // FIXME Problème avec les GPU qui ont une capacité de 17689 (ou autre) G et ça met un T à la fin...
+        // Sinon, on considère que c'est en Gigaoctet
+        return Long.parseLong(cap.substring(0, cap.length()));
     }
     
     public static Task generateRandomTask(int name) {
@@ -182,7 +193,6 @@ public class Task {
         // Choisit le besoin en ressources semi-aléatoirement
         // (suivant le type de serveur)
         long cap = randomCapacity(enu);
-        System.out.println("Capacité = " +cap+", donc cap = "+getCapacity(cap));
         return new Task(enu, cap, name);
     }
     
@@ -196,5 +206,40 @@ public class Task {
             default:
                 return (long)(Math.random()*(maxIO - minIO) + minIO);
         }
+    }
+    
+    public static void randomAncestors(Task tache, List<Task> tasks) {
+        int rand;
+        for(Task t : tasks) {
+            rand = (int)(Math.random()*1000);
+            if(rand > 700) { // 30% de chances que cette tâche soit une dépendance de la tache actuelle
+                tache.addRequiredTask(t);
+            }
+        }
+    }
+    
+    public static Task readTask(String taskString, List<Task> tasks) {
+        Task task = null;
+        
+        String[] temp = taskString.split(" = ");
+        String name = temp[0];
+        
+        temp = temp[1].split(", ");
+        String type = temp[0];
+        String capacity = temp[1];
+        
+        task = new Task(ServerEnum.getEnum(type), getCapacity(capacity), name);
+        
+        if(!temp[2].equalsIgnoreCase("[]")) {
+            temp = temp[2].replaceAll("[", "").replaceAll("]", "").split(",");
+            for(int i = 0; i < tasks.size(); i++) {
+                Task t = tasks.get(i);
+                if(t.getName().equalsIgnoreCase(temp[i])) {
+                    task.addRequiredTask(t);
+                }
+            }
+        }
+        
+        return task;
     }
 }

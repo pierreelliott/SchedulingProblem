@@ -21,7 +21,8 @@ public class FileGenerator {
         List<Machine> servers = generateServers(totalServers);
         List<Job> jobs = generateJobs(totalJobs);
         
-        System.out.println(serversToString(servers));
+        System.out.print(serversToString(servers));
+        System.out.println(jobsToString(jobs));
     }
     
     public static String serversToString(List<Machine> servers) {
@@ -30,45 +31,40 @@ public class FileGenerator {
         
         // Print the CPU part
         desc += "\t" + "CPU = [";
-        for(Machine s: servers) {
-            if(s.getType() == ServerEnum.CPU) {
-                serv += s.toString() + ", ";
-            }
+        for(Machine s: getServerOfType(servers,"CPU")) {
+            serv += s.toString() + ", ";
         }
-        if(serv.endsWith(", ")) {
-            serv = serv.substring(0, serv.length()-2);
-        }
-        desc += serv + "]\n";
+        desc += serv.substring(0, serv.length()-2) + "]\n";
         
         /* =========================================== */
         // Print the GPU part
         desc += "\t" + "GPU = [";
         serv = "";
-        for(Machine s: servers) {
-            if(s.getType() == ServerEnum.GPU) {
-                serv += s.toString() + ", ";
-            }
+        for(Machine s: getServerOfType(servers,"GPU")) {
+            serv += s.toString() + ", ";
         }
-        if(serv.endsWith(", ")) {
-            serv = serv.substring(0, serv.length()-3);
-        }
-        desc += serv + "]\n";
+        desc += serv.substring(0, serv.length()-2) + "]\n";
         
         /* =========================================== */
-        // Print the IO part
-        desc += "\t" + "I/o = [";
+        // Print the I/O part
+        desc += "\t" + "I/O = [";
         serv = "";
-        for(Machine s: servers) {
-            if(s.getType() == ServerEnum.IO) {
-                serv += s.toString() + ", ";
-            }
+        for(Machine s: getServerOfType(servers,"IO")) {
+            serv += s.toString() + ", ";
         }
-        if(serv.endsWith(", ")) {
-            serv = serv.substring(0, serv.length()-3);
-        }
-        desc += serv + "]\n";
+        desc += serv.substring(0, serv.length()-2) + "]\n";
         
         return desc;
+    }
+    
+    public static List<Machine> getServerOfType(List<Machine> servers, String type) {
+        List<Machine> serv = new ArrayList<>();
+        for(Machine s: servers) {
+            if(s.getType() == ServerEnum.valueOf(type)) {
+                serv.add(s);
+            }
+        }
+        return serv;
     }
     
     public static List<Machine> generateServers(int totalServers) {
@@ -92,12 +88,21 @@ public class FileGenerator {
         // TODO Générer min/max tâches aléatoirement (avec bornes min et max)
         int minTasks = 3;
         int maxTasks = 6;
-        int nbTasks = (int)(Math.random()*(maxTasks - minTasks)+minTasks);
+        int nbTasks;
         
         for(int i = 0; i<totalJobs; i++) {
+            nbTasks = (int)(Math.random()*(maxTasks - minTasks)+minTasks);
             jobs.add(Job.generateRandomJob(nbTasks));
         }
         
         return jobs;
+    }
+    
+    public static String jobsToString(List<Job> jobs) {
+        String chaine = "";
+        for(Job j : jobs) {
+            chaine += j.toString();
+        }
+        return chaine;
     }
 }

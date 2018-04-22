@@ -16,8 +16,8 @@ public class Machine {
     
     private static final int minCPU = 5; //G
     private static final int maxCPU = 50; //G
-    private static final int minGPU = 5000; //T
-    private static final int maxGPU = 25000; //T
+    private static final int minGPU = 5000; //G
+    private static final int maxGPU = 25000; //G
     private static final int minIO = 1; //G
     private static final int maxIO = 3; //G
     
@@ -110,5 +110,13 @@ public class Machine {
                 return (long)(Math.random()*(maxIO - minIO) + minIO);
         }
         return 3;
+    }
+    
+    public static Machine readFile(String serverString) {
+        Machine server = null;
+        
+        
+        
+        return server;
     }
 }

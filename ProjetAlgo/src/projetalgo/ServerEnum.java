@@ -13,7 +13,7 @@ public enum ServerEnum {
     
     CPU("CPU"),
     GPU("GPU"),
-    IO("IO");
+    IO("I/O");
     
     private final String value;
     private ServerEnum(String value) {
@@ -38,6 +38,8 @@ public enum ServerEnum {
         if(s.equalsIgnoreCase("GPU"))
             return ServerEnum.GPU;
         if(s.equalsIgnoreCase("I/O"))
+            return ServerEnum.IO;
+        if(s.equalsIgnoreCase("IO"))
             return ServerEnum.IO;
         return null;
     }
