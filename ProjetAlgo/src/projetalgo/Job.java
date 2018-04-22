@@ -19,6 +19,8 @@ public class Job {
     public Job(List<Task> tasks){
         this.tasks = tasks;
         this.jobNumber = ++jobTotalNumber;
+        
+        for(Task t : tasks) t.setParentJob(this);
     }
     
     public void addTask(Task task){

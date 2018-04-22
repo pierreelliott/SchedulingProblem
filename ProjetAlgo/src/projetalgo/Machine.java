@@ -23,10 +23,13 @@ public class Machine {
     
     private long totalOperations, availableOperations;
     private ServerEnum type;
+    private double currentTime = 0;
+    private List<Task> tasksDone = new ArrayList<>();
+    private int rank = 0;
     
     public Machine(ServerEnum type, long totalOperations){
         this.totalOperations = checkEnum(totalOperations, type);
-        availableOperations = this.totalOperations;
+        this.availableOperations = this.totalOperations;
         this.type = type;
     }
     
@@ -79,6 +82,20 @@ public class Machine {
         return (double)(totalOperations-availableOperations)/totalOperations;
     }
     
+    public double timeToDo(long operations) {
+        return (double)(totalOperations/operations);
+    }
+    
+    public void execute(Task task, double offset) {
+        this.currentTime += timeToDo(task.getRemainingOperations()) + offset;
+        this.tasksDone.add(task);
+        task.setDoneAt(currentTime);
+    }
+    
+    public double getCurrentTime() { return currentTime; }
+    public int getRank() { return rank; }
+    public void setRank(int n) { rank = n; }
+    
     /* ================================= */
 
     @Override
@@ -112,11 +129,67 @@ public class Machine {
         return 3;
     }
     
-    public static Machine readFile(String serverString) {
-        Machine server = null;
+    public static List<Machine> readFile(String serverString) {
+        List<Machine> servers = new ArrayList<>();
         
+        serverString = serverString.replaceAll("Servers\n", "").replaceAll("\t", "");
+        String[] tab = serverString.split("\n");
         
+        // ======= CPU ========
+        String type = tab[0].split(" = ")[0];
+        String[] serv = tab[0].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        for(int i = 0; i < serv.length; i++) {
+            servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
+        }
         
-        return server;
+        // ======= GPU ========
+        type = tab[1].split(" = ")[0];
+        serv = tab[1].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        for(int i = 0; i < serv.length; i++) {
+            servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
+        }
+        
+        // ======= I/O ========
+        type = tab[2].split(" = ")[0];
+        serv = tab[2].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        for(int i = 0; i < serv.length; i++) {
+            servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
+        }
+        
+        return servers;
+    }
+    
+    public static long getCapacity(String cap) {
+        if(cap.endsWith("T")) { // Si l'unité est le Teraoctet
+            return Long.parseLong(cap.substring(0, cap.length()))*1000;
+        }
+        // Sinon, on considère que c'est en Gigaoctet
+        return Long.parseLong(cap.substring(0, cap.length()));
+    }
+    
+    public static Machine best(ServerEnum type, List<Machine> servers) {
+        Machine best = null;
+        for(Machine s : servers) {
+            if(s.getType() == type) {
+                if(best == null) {
+                    best = s;
+                } else {
+                    if(best.totalOperations < s.totalOperations) {
+                        best = s;
+                    }
+                }
+            }
+        }
+        return best;
+    }
+    
+    public static List<Machine> getServerOfType(List<Machine> servers, ServerEnum type) {
+        List<Machine> serv = new ArrayList<>();
+        for(Machine s: servers) {
+            if(s.getType() == type) {
+                serv.add(s);
+            }
+        }
+        return serv;
     }
 }

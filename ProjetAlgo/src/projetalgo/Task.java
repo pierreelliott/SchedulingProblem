@@ -15,8 +15,13 @@ import java.util.List;
 public class Task {
     private List<Task> requiredTasks;
     private ServerEnum machineType;
-    private long /*totalOperations,*/ remainingOperations;
+    private long remainingOperations;
     private String name;
+    private Job parentJob;
+    private boolean done;
+    private double doneAt;
+    
+    private List<Task> childTasks = new ArrayList<>();
     
     public Task(List<Task> requiredTasks, ServerEnum machineType, long remainingOperations, int nom){
         this(requiredTasks, machineType, remainingOperations, "T"+nom);
@@ -27,6 +32,7 @@ public class Task {
         this.machineType = machineType;
         this.remainingOperations = remainingOperations;
         this.name = nom;
+        verifyChildTasks(this.requiredTasks);
     }
     
     public Task(ServerEnum machineType, long remainingOperations, int nom){
@@ -38,8 +44,96 @@ public class Task {
     }
     
     public void addRequiredTask(Task task){
-        requiredTasks.add(task);
+        if(!requiredTasks.contains(task)) {
+            requiredTasks.add(task);
+        }
+        task.addChildTask(this);
     }
+    
+    public void verifyChildTasks(List<Task> parents) {
+        for(Task t : parents) {
+            if(!t.isChildOfTask(this)) {
+                t.addChildTask(this);
+            }
+        }
+    }
+    
+    public void addChildTask(Task task) {
+        if(!childTasks.contains(task))
+            childTasks.add(task);
+    }
+    
+    public boolean isChildOfTask(Task task) {
+        for(Task t : childTasks)
+            if(t == task)
+                return true;
+        return false;
+    }
+    
+    public List<Task> getChildTasks() { return childTasks; }
+
+    public Job getParentJob() {
+        return parentJob;
+    }
+
+    public void setParentJob(Job parentJob) {
+        this.parentJob = parentJob;
+    }
+
+    public long getRemainingOperations() {
+        return remainingOperations;
+    }
+
+    public void setDone(boolean done) {
+        this.done = done;
+    }
+    
+    public double estimateTime(Machine[] bests) {
+        Machine best = null;
+        switch(this.machineType) {
+            case CPU: best = bests[0]; break;
+            case GPU: best = bests[1]; break;
+            case IO: best = bests[2]; break;
+        }
+        if(childTasks.isEmpty()) {
+            return best.timeToDo(remainingOperations);
+        }
+        
+        double rank = 0;
+        Task worst = null;
+        for(Task t : childTasks) {
+            double temp = t.estimateTime(bests);
+            if(temp > rank) {
+                rank = temp;
+                worst = t;
+            }
+        }
+        return rank + best.timeToDo(remainingOperations);
+    }
+    
+    public ServerEnum getType() { return this.machineType; }
+    
+    public void setDoneAt(double t) { doneAt = t; }
+    
+    public boolean parentsAreDone() {
+        for(Task t : this.requiredTasks) {
+            if(t.isDone())
+                return false;
+        }
+        return true;
+    }
+    
+    public double getLastParentDoneAt() {
+        double time = 0;
+        for(Task t : this.requiredTasks) {
+            if(t.isDone() && t.doneAt > time) {
+                time = t.doneAt;
+            }
+        }
+        return time;
+    }
+    
+    /* ================================ */
     
     public void workOnTask(List<Machine> machines){
         for(Task requiredTask : requiredTasks){
@@ -118,7 +212,7 @@ public class Task {
     }
     
     public boolean isDone(){
-        return remainingOperations <= 0;
+        return this.done || remainingOperations <= 0;
     }
     
     /* ========================== */
@@ -176,7 +270,7 @@ public class Task {
     }
     
     private static long getCapacity(String cap) {
-        if(cap.endsWith("T")) { // Si l'unité est ele Teraoctet
+        if(cap.endsWith("T")) { // Si l'unité est le Teraoctet
             return Long.parseLong(cap.substring(0, cap.length()))*1000;
         }
         // Sinon, on considère que c'est en Gigaoctet

@@ -14,15 +14,16 @@ import java.util.List;
  */
 public class FileGenerator {
     
-    public static void generate() {
+    public static String generate() {
         int totalServers = 10;
         int totalJobs = 20;
         
         List<Machine> servers = generateServers(totalServers);
         List<Job> jobs = generateJobs(totalJobs);
         
-        System.out.print(serversToString(servers));
-        System.out.println(jobsToString(jobs));
+        String str = serversToString(servers) + jobsToString(jobs);
+        //System.out.println(str);
+        return str;
     }
     
     public static String serversToString(List<Machine> servers) {
