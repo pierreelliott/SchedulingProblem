@@ -73,6 +73,8 @@ public class Machine {
     public long getTotalOperations(){
         return totalOperations;
     }
+
+    public List<Task> getTasksDone() { return tasksDone; }
     
     public void resetMachine(){
         availableOperations = totalOperations;
@@ -85,6 +87,7 @@ public class Machine {
     public double timeToDo(long operations) {
         return (double)(totalOperations/operations);
     }
+    public double timeToDo(Task task) { return timeToDo(task.getTotalOperations()); }
     
     public void execute(Task task, double offset) {
         this.currentTime += timeToDo(task.getRemainingOperations()) + offset;
@@ -137,21 +140,21 @@ public class Machine {
         
         // ======= CPU ========
         String type = tab[0].split(" = ")[0];
-        String[] serv = tab[0].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        String[] serv = tab[0].split(" = ")[1].replace("[", "").replace("]", "").split(", ");
         for(int i = 0; i < serv.length; i++) {
             servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
         }
         
         // ======= GPU ========
         type = tab[1].split(" = ")[0];
-        serv = tab[1].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        serv = tab[1].split(" = ")[1].replace("[", "").replace("]", "").split(", ");
         for(int i = 0; i < serv.length; i++) {
             servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
         }
         
         // ======= I/O ========
         type = tab[2].split(" = ")[0];
-        serv = tab[2].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        serv = tab[2].split(" = ")[1].replace("[", "").replace("]", "").split(", ");
         for(int i = 0; i < serv.length; i++) {
             servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
         }
