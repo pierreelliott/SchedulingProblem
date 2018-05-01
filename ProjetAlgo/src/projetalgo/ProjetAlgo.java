@@ -27,7 +27,13 @@ public class ProjetAlgo {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        FileGenerator.generate();
+        String file = FileGenerator.generate();
+        System.out.println("--- Début du fichier généré ---");
+        System.out.println(file);
+        System.out.println("--- Fin du fichier généré ---");
+        schedulingSolution(file, 1);
+        schedulingSolution(file, 2);
+        schedulingSolution(file, 3);
         //test_schedulingSolution1();
         //test_schedulingSolution2();
     }
@@ -44,7 +50,7 @@ public class ProjetAlgo {
         test3(true);
     }
     
-    public static void schedulingSolution1(String file) {
+    public static void schedulingSolution(String file, int solutionNumber) {
         String[] f = file.split("\nJob ");
         List<Machine> servers = Machine.readFile(f[0]);
         List<Job> jobs = new ArrayList<>();
@@ -52,7 +58,23 @@ public class ProjetAlgo {
             jobs.add(Job.readJob(f[i]));
         }
         
-        System.out.println(workOnJobs(jobs, servers, false));
+        double time = -1;
+        
+        switch(solutionNumber){
+            case 1:
+                time = workOnJobs(jobs, servers, false);
+                break;
+            case 2:
+                time = workOnJobs(jobs, servers, true);
+                break;
+            case 3:
+                time = algo3(jobs, servers);
+                break;
+        }
+        
+        if(time >= 0){
+            System.out.println("Temps d'exécution de l'algo " + solutionNumber + " : " + time);
+        }
     }
     
     public static void rankServers(List<Machine> servers) {
@@ -61,7 +83,7 @@ public class ProjetAlgo {
         */
     }
     
-    public static void algo3(List<Job> jobs, List<Machine> servers) {
+    public static double algo3(List<Job> jobs, List<Machine> servers) {
         Machine bestCPU = Machine.best(ServerEnum.CPU, servers);
         Machine bestGPU = Machine.best(ServerEnum.GPU, servers);
         Machine bestIO = Machine.best(ServerEnum.IO, servers);
@@ -85,6 +107,7 @@ public class ProjetAlgo {
             }
         }
         boolean finished = false;
+        double now = Double.MAX_VALUE;
         while(!finished) {
             double worstTime = 0;
             Task taskToExecute = null;
@@ -100,7 +123,7 @@ public class ProjetAlgo {
             }
             // Sinon on choisit la machine sur laquelle on va l'exécuter
             
-            double now = Double.MAX_VALUE;
+            now = Double.MAX_VALUE;
             Machine serv = null;
             for(Machine server : Machine.getServerOfType(servers, taskToExecute.getType())) {
                 if(server.getCurrentTime() < now) {
@@ -112,6 +135,15 @@ public class ProjetAlgo {
         }
         
         System.out.println("Emploi du temps effectué");
+
+        now = 0;
+        for(Machine server : servers) {
+            if(server.getCurrentTime() > now) {
+                now = server.getCurrentTime();
+            }
+        }
+
+        return now;
     }
     
     /**
@@ -123,10 +155,13 @@ public class ProjetAlgo {
      */
     public static double workOnJobs(List<Job> jobs, List<Machine> machines, boolean optimize){
         double elapsedSeconds = 0d, totalElapsedSeconds = 0d;
+        int etape = 0;
         
         boolean isWorkDone = false;
         while(!isWorkDone){
             isWorkDone = true;
+            etape++;
+            //System.out.println("Etape " + etape);
             
             for(Job job : jobs){
                 for(Task task : job.getTasks()){
@@ -139,6 +174,7 @@ public class ProjetAlgo {
                     if(!task.isDone()){
                         isWorkDone = false;
                     }
+                    //System.out.println(task.toString());
                 }
             }
             
@@ -149,6 +185,7 @@ public class ProjetAlgo {
             resetMachines(machines);
             totalElapsedSeconds += elapsedSeconds;
             elapsedSeconds = 0d;
+            //System.out.println("Current number of seconds : " + totalElapsedSeconds);
         }
         
         return totalElapsedSeconds;

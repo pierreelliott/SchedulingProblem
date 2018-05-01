@@ -76,9 +76,9 @@ public class Job {
         Job job = null;
         List<Task> tasks = new ArrayList<>();
         
-        String[] tasksString = jobString.replaceAll("\t", "").split("\n");
+        String[] tasksString = jobString.replace("\t", "").split("\n");
         for(int i = 1; i < tasksString.length; i++) {
-            tasks.add(Task.readTask(jobString, tasks));
+            tasks.add(Task.readTask(tasksString[i], tasks));
         }
         
         job = new Job(tasks);

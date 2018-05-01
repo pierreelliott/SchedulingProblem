@@ -132,26 +132,26 @@ public class Machine {
     public static List<Machine> readFile(String serverString) {
         List<Machine> servers = new ArrayList<>();
         
-        serverString = serverString.replaceAll("Servers\n", "").replaceAll("\t", "");
+        serverString = serverString.replace("Servers\n", "").replace("\t", "");
         String[] tab = serverString.split("\n");
         
         // ======= CPU ========
         String type = tab[0].split(" = ")[0];
-        String[] serv = tab[0].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        String[] serv = tab[0].split(" = ")[1].replace("[", "").replace("]", "").split(", ");
         for(int i = 0; i < serv.length; i++) {
             servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
         }
         
         // ======= GPU ========
         type = tab[1].split(" = ")[0];
-        serv = tab[1].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        serv = tab[1].split(" = ")[1].replace("[", "").replace("]", "").split(", ");
         for(int i = 0; i < serv.length; i++) {
             servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
         }
         
         // ======= I/O ========
         type = tab[2].split(" = ")[0];
-        serv = tab[2].split(" = ")[1].replaceAll("[", "").replaceAll("]", "").split(", ");
+        serv = tab[2].split(" = ")[1].replace("[", "").replace("]", "").split(", ");
         for(int i = 0; i < serv.length; i++) {
             servers.add(new Machine(ServerEnum.getEnum(type), getCapacity(serv[i])));
         }
@@ -161,10 +161,10 @@ public class Machine {
     
     public static long getCapacity(String cap) {
         if(cap.endsWith("T")) { // Si l'unité est le Teraoctet
-            return Long.parseLong(cap.substring(0, cap.length()))*1000;
+            return Long.parseLong(cap.substring(0, cap.length()-1))*1000;
         }
         // Sinon, on considère que c'est en Gigaoctet
-        return Long.parseLong(cap.substring(0, cap.length()));
+        return Long.parseLong(cap.substring(0, cap.length()-1));
     }
     
     public static Machine best(ServerEnum type, List<Machine> servers) {

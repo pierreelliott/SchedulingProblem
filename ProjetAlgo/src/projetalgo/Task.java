@@ -18,7 +18,7 @@ public class Task {
     private long remainingOperations;
     private String name;
     private Job parentJob;
-    private boolean done;
+    private boolean done = false;
     private double doneAt;
     
     private List<Task> childTasks = new ArrayList<>();
@@ -202,11 +202,30 @@ public class Task {
             }
             else{
                 long operationsToMake = Math.min(machineAvailableOperations, (long)(machineAvailableOperations*timeToWork));
-                remainingOperations -= machine.makeOperations(operationsToMake);
+                /*if(operationsToMake <= 0 && machineAvailableOperations > 0 && remainingOperations > 0){//Pour éviter une famine s'il y a plus de machines que d'opérations restantes
+                    operationsToMake = 1;
+                }*/
+                long operationsMade = machine.makeOperations(operationsToMake);
+                remainingOperations -= operationsMade;
+                machineTotalAvailableOperations -= operationsMade;
             }
 
             if(this.isDone()){
-                break;
+                return;
+            }
+        }
+        
+        if(machineTotalAvailableOperations > 0){//Evite de laisser une tâche inachevée alors qu'il reste des opérations disponibles
+                                                //ce qui risque d'arriver si timeToWork n'est pas un nombre entier
+            for(Machine machine : machines){
+                if(machine.getType()!=machineType){
+                    continue;
+                }
+                
+                remainingOperations -= machine.makeOperations(1);
+                if(this.isDone()){
+                    return;
+                }
             }
         }
     }
@@ -271,10 +290,10 @@ public class Task {
     
     private static long getCapacity(String cap) {
         if(cap.endsWith("T")) { // Si l'unité est le Teraoctet
-            return Long.parseLong(cap.substring(0, cap.length()))*1000;
+            return Long.parseLong(cap.substring(0, cap.length()-1))*1000;
         }
         // Sinon, on considère que c'est en Gigaoctet
-        return Long.parseLong(cap.substring(0, cap.length()));
+        return Long.parseLong(cap.substring(0, cap.length()-1));
     }
     
     public static Task generateRandomTask(int name) {
@@ -325,13 +344,16 @@ public class Task {
         task = new Task(ServerEnum.getEnum(type), getCapacity(capacity), name);
         
         if(!temp[2].equalsIgnoreCase("[]")) {
-            temp = temp[2].replaceAll("[", "").replaceAll("]", "").split(",");
-            for(int i = 0; i < tasks.size(); i++) {
-                Task t = tasks.get(i);
-                if(t.getName().equalsIgnoreCase(temp[i])) {
-                    task.addRequiredTask(t);
+            temp = temp[2].replace("[", "").replace("]", "").split(",");
+            for(int i = 0; i < temp.length; i++){
+                for(int j = 0; j < tasks.size(); j++) {
+                    Task t = tasks.get(j);
+                    if(t.getName().equalsIgnoreCase(temp[i])) {
+                        task.addRequiredTask(t);
+                    }
                 }
             }
+            
         }
         
         return task;
