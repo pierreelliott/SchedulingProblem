@@ -73,6 +73,8 @@ public class Machine {
     public long getTotalOperations(){
         return totalOperations;
     }
+
+    public List<Task> getTasksDone() { return tasksDone; }
     
     public void resetMachine(){
         availableOperations = totalOperations;
@@ -85,6 +87,7 @@ public class Machine {
     public double timeToDo(long operations) {
         return (double)(totalOperations/operations);
     }
+    public double timeToDo(Task task) { return timeToDo(task.getTotalOperations()); }
     
     public void execute(Task task, double offset) {
         this.currentTime += timeToDo(task.getRemainingOperations()) + offset;

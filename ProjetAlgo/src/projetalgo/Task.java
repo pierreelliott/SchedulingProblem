@@ -20,6 +20,7 @@ public class Task {
     private Job parentJob;
     private boolean done = false;
     private double doneAt;
+    private long totalOperations;
     
     private List<Task> childTasks = new ArrayList<>();
     
@@ -33,6 +34,7 @@ public class Task {
         this.remainingOperations = remainingOperations;
         this.name = nom;
         verifyChildTasks(this.requiredTasks);
+        this.totalOperations = remainingOperations;
     }
     
     public Task(ServerEnum machineType, long remainingOperations, int nom){
@@ -42,6 +44,8 @@ public class Task {
     public Task(ServerEnum machineType, long remainingOperations, String nom){
         this(new ArrayList<>(), machineType, remainingOperations, nom);
     }
+
+    public long getTotalOperations() { return totalOperations; }
     
     public void addRequiredTask(Task task){
         if(!requiredTasks.contains(task)) {
@@ -345,12 +349,10 @@ public class Task {
         
         if(!temp[2].equalsIgnoreCase("[]")) {
             temp = temp[2].replace("[", "").replace("]", "").split(",");
-            for(int i = 0; i < temp.length; i++){
-                for(int j = 0; j < tasks.size(); j++) {
-                    Task t = tasks.get(j);
-                    if(t.getName().equalsIgnoreCase(temp[i])) {
-                        task.addRequiredTask(t);
-                    }
+            for(int i = 0; i < tasks.size(); i++) {
+                Task t = tasks.get(i);
+                if(t.getName().equalsIgnoreCase(temp[i])) {
+                    task.addRequiredTask(t);
                 }
             }
             
