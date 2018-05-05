@@ -117,7 +117,7 @@ public class ProjetAlgo {
                     remainingTasksToDo--;
                 }
             }
-            System.out.println("Tâches à faire : " + remainingTasksToDo);
+            //System.out.println("Tâches à faire : " + remainingTasksToDo);
             
             double worstTime = 0;
             Task taskToExecute = null;
@@ -138,8 +138,12 @@ public class ProjetAlgo {
             
             now = Double.MAX_VALUE;
             Machine serv = null;
+            double tmpTime = Double.MAX_VALUE;
             for(Machine server : Machine.getServerOfType(servers, taskToExecute.getType())) {
-                if(server.getCurrentTime() < now) {
+                if(server.getMinimumTime() < now) {
+                    // Le temps est un peu plus logique, donc il y a bien un souci
+                    // sur le "setDoneAt" des tâches
+                //if(server.getCurrentTime() < now) {
                     serv = server;
                     now = server.getCurrentTime();
                 }

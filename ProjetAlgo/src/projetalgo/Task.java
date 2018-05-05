@@ -122,6 +122,8 @@ public class Task {
         this.doneAt = t;
     }
     
+    public double getDoneAt() { return this.doneAt; }
+    
     public boolean parentsAreDone() {
         for(Task t : this.requiredTasks) {
             if(!t.isDone(true)) {

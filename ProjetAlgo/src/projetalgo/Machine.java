@@ -90,12 +90,22 @@ public class Machine {
     public double timeToDo(Task task) { return timeToDo(task.getTotalOperations()); }
     
     public void execute(Task task, double offset) {
-        this.currentTime += timeToDo(task.getRemainingOperations()) + offset;
+        this.currentTime += timeToDo(task) + offset;
         this.tasksDone.add(task);
         task.setDoneAt(currentTime);
     }
     
     public double getCurrentTime() { return currentTime; }
+    public double getMinimumTime() {
+        double time = 0;
+        for(Task t : tasksDone) {
+            //if(t.getDoneAt() > time) {
+            //    time = t.getDoneAt();
+            //}
+            time += timeToDo(t);
+        }
+        return time;
+    }
     public int getRank() { return rank; }
     public void setRank(int n) { rank = n; }
     
