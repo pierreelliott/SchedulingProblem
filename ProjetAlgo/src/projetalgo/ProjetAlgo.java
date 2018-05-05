@@ -108,14 +108,27 @@ public class ProjetAlgo {
         }
         boolean finished = false;
         double now = Double.MAX_VALUE;
+        int tasksDone = 0;
         while(!finished) {
+            
+            int remainingTasksToDo = tasksNumber;
+            for(int i = 0; i < tasksNumber; i++) {
+                if( ((Task)tab[i][0]).isDone(true) ) {
+                    remainingTasksToDo--;
+                }
+            }
+            System.out.println("Tâches à faire : " + remainingTasksToDo);
+            
             double worstTime = 0;
             Task taskToExecute = null;
             for(int i = 0; i < tasksNumber; i++) {
-                if( !((Task)tab[i][0]).isDone() && (double)tab[i][1] > worstTime
-                        && ((Task)tab[i][0]).parentsAreDone() ) {
-                    taskToExecute = (Task)tab[i][0];
-                    worstTime = (double)tab[i][1];
+                if( !((Task)tab[i][0]).isDone(true) ) {
+                    if( (double)tab[i][1] > worstTime ) {
+                        if( ((Task)tab[i][0]).parentsAreDone() ) {
+                            taskToExecute = (Task)tab[i][0];
+                            worstTime = (double)tab[i][1];
+                        }
+                    }
                 }
             }
             if(taskToExecute == null) { // Si aucune tâche choisie, on a fini
@@ -132,6 +145,7 @@ public class ProjetAlgo {
                 }
             }
             serv.execute(taskToExecute, taskToExecute.getLastParentDoneAt());
+            tasksDone++;
         }
         
         System.out.println("Emploi du temps effectué");

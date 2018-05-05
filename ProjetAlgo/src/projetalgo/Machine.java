@@ -85,7 +85,7 @@ public class Machine {
     }
     
     public double timeToDo(long operations) {
-        return (double)(totalOperations/operations);
+        return ((double)totalOperations)/((double)operations);
     }
     public double timeToDo(Task task) { return timeToDo(task.getTotalOperations()); }
     

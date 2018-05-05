@@ -117,12 +117,16 @@ public class Task {
     
     public ServerEnum getType() { return this.machineType; }
     
-    public void setDoneAt(double t) { doneAt = t; }
+    public void setDoneAt(double t) {
+        this.done = true;
+        this.doneAt = t;
+    }
     
     public boolean parentsAreDone() {
         for(Task t : this.requiredTasks) {
-            if(t.isDone())
+            if(!t.isDone(true)) {
                 return false;
+            }
         }
         return true;
     }
@@ -130,7 +134,7 @@ public class Task {
     public double getLastParentDoneAt() {
         double time = 0;
         for(Task t : this.requiredTasks) {
-            if(t.isDone() && t.doneAt > time) {
+            if(t.isDone(true) && t.doneAt > time) {
                 time = t.doneAt;
             }
         }
@@ -235,7 +239,14 @@ public class Task {
     }
     
     public boolean isDone(){
-        return this.done || remainingOperations <= 0;
+        return remainingOperations <= 0;
+    }
+    
+    public boolean isDone(boolean useIsDone) {
+        if(useIsDone) {
+            return this.done;
+        }
+        return isDone();
     }
     
     /* ========================== */
@@ -349,11 +360,13 @@ public class Task {
         
         if(!temp[2].equalsIgnoreCase("[]")) {
             temp = temp[2].replace("[", "").replace("]", "").split(",");
-            for(int i = 0; i < tasks.size(); i++) {
-                Task t = tasks.get(i);
-                if(t.getName().equalsIgnoreCase(temp[i])) {
-                    task.addRequiredTask(t);
-                }
+            for(int i = 0; i < temp.length; i++){ 
+                for(int j = 0; j < tasks.size(); j++) { 
+                    Task t = tasks.get(j); 
+                    if(t.getName().equalsIgnoreCase(temp[i])) { 
+                        task.addRequiredTask(t); 
+                    } 
+                } 
             }
             
         }
