@@ -92,6 +92,8 @@ public class Task {
         this.done = done;
     }
     
+    public List<Task> getParentTasks() {  return this.requiredTasks; }
+    
     public double estimateTime(Machine[] bests) {
         Machine best = null;
         switch(this.machineType) {

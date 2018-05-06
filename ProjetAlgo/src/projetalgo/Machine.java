@@ -90,7 +90,11 @@ public class Machine {
     public double timeToDo(Task task) { return timeToDo(task.getTotalOperations()); }
     
     public void execute(Task task, double offset) {
-        this.currentTime += timeToDo(task) + offset;
+        if(this.currentTime < offset) {
+            this.currentTime = offset + timeToDo(task);
+        } else {
+            this.currentTime += timeToDo(task);
+        }
         this.tasksDone.add(task);
         task.setDoneAt(currentTime);
     }

@@ -23,6 +23,8 @@ public class Job {
         for(Task t : tasks) t.setParentJob(this);
     }
     
+    public int getJobNumber() { return jobNumber; }
+    
     public void addTask(Task task){
         tasks.add(task);
     }

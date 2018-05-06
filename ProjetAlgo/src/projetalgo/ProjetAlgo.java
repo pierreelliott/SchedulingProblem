@@ -54,6 +54,7 @@ public class ProjetAlgo {
         String[] f = file.split("\nJob ");
         List<Machine> servers = Machine.readFile(f[0]);
         List<Job> jobs = new ArrayList<>();
+        Job.setJobStartNumber(0);
         for(int i = 1; i < f.length; i++) {
             jobs.add(Job.readJob(f[i]));
         }
@@ -103,6 +104,9 @@ public class ProjetAlgo {
             for(Task t : j.getTasks()) {
                 tab[count][0] = t;
                 tab[count][1] = new Double(t.estimateTime(bests));
+                //System.out.println("Tâche J" + t.getParentJob().getJobNumber() +
+                //        t.getName() + " => " + tab[count][1] + " (" + t.getParentTasks().size() + " parents)");
+                        
                 count++;
             }
         }
@@ -110,13 +114,13 @@ public class ProjetAlgo {
         double now = Double.MAX_VALUE;
         int tasksDone = 0;
         while(!finished) {
-            
+            /*
             int remainingTasksToDo = tasksNumber;
             for(int i = 0; i < tasksNumber; i++) {
                 if( ((Task)tab[i][0]).isDone(true) ) {
                     remainingTasksToDo--;
                 }
-            }
+            }*/
             //System.out.println("Tâches à faire : " + remainingTasksToDo);
             
             double worstTime = 0;
